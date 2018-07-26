@@ -32,7 +32,8 @@ def test_command_line_interface():
     runner = CliRunner()
     result = runner.invoke(cli.main)
     assert result.exit_code == 0
-    assert "leavemanager.cli.main" in result.output
+    assert "Console script for leavemanager." in result.output
     help_result = runner.invoke(cli.main, ["--help"])
     assert help_result.exit_code == 0
-    assert "--help  Show this message and exit." in help_result.output
+    assert "Usage:" in help_result.output
+    assert " [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]..." in help_result.output

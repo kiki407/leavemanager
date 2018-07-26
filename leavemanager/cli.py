@@ -3,31 +3,50 @@
 """Console script for leavemanager."""
 import sys
 import click
-from leavemanager import configuration
+from leavemanager.configuration import getconf, setconf
+from leavemanager.utils import slightlybeautify
+from datetime import datetime
+from dateutil.parser import parse
+
+
+class DateParamType(click.ParamType):
+    name = "date"
+
+    def convert(self, value, param, ctx):
+        default = datetime.today()
+        try:
+            return parse(value, fuzzy=True, default=default, dayfirst=True).date()
+        except ValueError:
+            self.fail("%s is not a valid date" % value, param, ctx)
+
+
+DATE = DateParamType()
 
 
 @click.group(chain=True)
 def main(args=None):
     """Console script for leavemanager."""
-    click.echo(
-        "Replace this message by putting your code into " "leavemanager.cli.main"
-    )
-    click.echo("See click documentation at http://click.pocoo.org/")
     return 0
 
 
 @main.command()
 def configure():
-    actualconfig = leavemanager.configure()
-    if actualconfig:
-        click.echo("Modify configuration")
-        for k in actualconfig.get_keys():
-            val = click.promt(
-                f"{actualconfig.get_displayname()}: ".capitalize(),
-                default=actualconfig.get_value(),
-            )
-            actualconfig.set_value(k)
-    click.echo("Configuration")
+    keys = (
+        ("days_of_leave", click.INT),
+        ("first_name", click.STRING),
+        ("last_name", click.STRING),
+        ("storage_type", click.Choice(["file"])),
+    )
+    actualconfig = getconf()
+    newconf = {}
+    click.echo("Modify configuration")
+    for k in keys:
+        newconf[k[0]] = click.prompt(
+            f"{slightlybeautify(k[0])}".capitalize(),
+            default=actualconfig.get(k[0], None),
+            type=k[1],
+        )
+    setconf(newconf)
 
 
 @main.command()
@@ -36,10 +55,10 @@ def sim():
 
 
 @main.command()
-@click.argument("date")
-@click.option("--until", "-t")
+@click.argument("date", type=DATE)
+@click.option("--until", "-t", type=DATE)
 def add(date, until):
-    click.echo("add leave")
+    click.echo(f"{date}")
 
 
 @main.command()

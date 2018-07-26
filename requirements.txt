@@ -26,6 +26,7 @@ Pygments==2.2.0
 pyparsing==2.2.0
 pytest==3.4.2
 pytest-runner==2.11.1
+python-dateutil==2.7.3
 pytz==2018.5
 PyYAML==3.13
 redis==2.10.6
