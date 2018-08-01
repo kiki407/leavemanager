@@ -5,6 +5,7 @@ import sys
 import click
 from leavemanager.configuration import getconf, setconf
 from leavemanager.utils import slightlybeautify
+from leavemanager.leavemanager import Leave, AllLeave
 from datetime import datetime
 from dateutil.parser import parse
 
@@ -58,7 +59,8 @@ def sim():
 @click.argument("date", type=DATE)
 @click.option("--until", "-t", type=DATE)
 def add(date, until):
-    click.echo(f"{date}")
+    leave = Leave(date)
+    click.echo(leave.store())
 
 
 @main.command()
@@ -69,7 +71,9 @@ def rem():
 @main.command()
 @click.option("--year", "-y", default="current", help="year of leave")
 def left(year):
-    click.echo(f"{year}")
+    leave = AllLeave()
+    res = leave.left(year=year)
+    click.echo(f"{res}")
 
 
 if __name__ == "__main__":
