@@ -3,7 +3,7 @@
 """Console script for leavemanager."""
 import sys
 import click
-from leavemanager.configuration import getconf, setconf
+from leavemanager.configuration import getconf, setconf, get_keys
 from leavemanager.utils import slightlybeautify
 from leavemanager.leavemanager import Leave, AllLeave
 from datetime import datetime
@@ -24,7 +24,7 @@ class DateParamType(click.ParamType):
 DATE = DateParamType()
 
 
-@click.group(chain=True)
+@click.group(chain=False)
 def main(args=None):
     """Console script for leavemanager."""
     return 0
@@ -32,12 +32,10 @@ def main(args=None):
 
 @main.command()
 def configure():
-    keys = (
-        ("days_of_leave", click.INT),
-        ("first_name", click.STRING),
-        ("last_name", click.STRING),
-        ("storage_type", click.Choice(["file"])),
-    )
+    """
+    Prompts user for configuration settings
+    """
+    keys = get_keys()
     actualconfig = getconf()
     newconf = {}
     click.echo("Modify configuration")
@@ -58,14 +56,41 @@ def sim():
 @main.command()
 @click.argument("date", type=DATE)
 @click.option("--until", "-t", type=DATE)
+@click.option("--approved", "-A", type=click.BOOL)
 def add(date, until):
-    leave = Leave(date)
+    """
+    Adds a new entry in dates of leave
+    """
+    if until:
+        leave = LeaveRange(date, until)
+    else:
+        leave = Leave(date)
     click.echo(leave.store())
 
 
 @main.command()
-def rem():
+@click.argument("date", type=DATE)
+def rem(date):
+    leave = Leave(date)
+    click.echo(leave.remove())
+
+
+@main.group()
+def approve():
     click.echo("remove leave")
+
+
+@approve.command()
+def old():
+    leave = AllLeave()
+    leave.approve_old()
+
+
+@main.command()
+@click.option("--year", "-y", default="current", help="year of leave")
+def report(year):
+    leave = AllLeave()
+    click.echo(leave.report(year))
 
 
 @main.command()
