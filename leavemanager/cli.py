@@ -25,6 +25,7 @@ DATE = DateParamType()
 
 
 @click.group(chain=False)
+@click.version_option()
 def main(args=None):
     """Console script for leavemanager."""
     return 0
@@ -71,12 +72,27 @@ def add(date, until, approved):
 @main.command()
 @click.argument("date", type=DATE)
 def rem(date):
+    """
+    Removes an entry from leaves
+    """
     leave = Leave(date)
     click.echo(leave.remove())
 
 
 @main.group()
-def approve():
+@click.option("--old", "-o", type=click.BOOL, help="approve old")
+@click.option("--year", "-o", type=click.BOOL, help="approve old")
+
+def approve(old):
+    """
+    Approves leave 
+    """
+    if old:
+        leave = AllLeave()
+        leave.approve_old()
+    else:
+        leave = Leave()
+
     click.echo("remove leave")
 
 
