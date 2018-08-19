@@ -37,6 +37,7 @@ Features
  * Excel Storage/export
  * google calendar sync
  * simulation mode
+ * tests
 
 Credits
 -------
