@@ -38,6 +38,7 @@ Features
  * google calendar sync
  * simulation mode
  * tests
+ * allow different period calculation period, eg. 1st may -> 31st april.
 
 Credits
 -------

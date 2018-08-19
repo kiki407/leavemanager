@@ -105,6 +105,9 @@ def old():
 @main.command()
 @click.option("--year", "-y", default="current", help="year of leave")
 def report(year):
+    """
+    shows a report of days taken and days left for the year
+    """
     leave = AllLeave()
     click.echo(leave.report(year))
 
@@ -112,6 +115,9 @@ def report(year):
 @main.command()
 @click.option("--year", "-y", default="current", help="year of leave")
 def left(year):
+    """
+    Tell how many days are left
+    """
     leave = AllLeave()
     res = leave.left(year=year)
     click.echo(f"{res}")
