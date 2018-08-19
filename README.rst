@@ -31,6 +31,12 @@ Features
 --------
 
 * TODO
+ * Halfdays
+ * Rtt
+ * better report formatting - html, excel
+ * Excel Storage/export
+ * google calendar sync
+ * simulation mode
 
 Credits
 -------
