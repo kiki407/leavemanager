@@ -3,7 +3,6 @@ from tinydb import TinyDB, Query
 
 
 class FileStorage(object):
-
     def __init__(self):
         filepath = Path.home().joinpath(".leavemanager")
         conf = filepath.joinpath("data.json")

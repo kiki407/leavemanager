@@ -8,7 +8,6 @@ from workalendar.registry import registry
 
 
 class Countries(object):
-
     def __init__(self):
         self.supported_countries = {}
         countries = {a.alpha_2: a.name for a in pycountry.countries}
@@ -25,7 +24,6 @@ class Countries(object):
 
 
 class ConfigurationFile(object):
-
     def __init__(self):
         countries = Countries().get_countries()
         self.keys = (
@@ -34,8 +32,8 @@ class ConfigurationFile(object):
             ("last_name", click.STRING),
             ("work_on_weekends", click.BOOL),
             ("work_on_public_holidays", click.BOOL),
-            ("country_for_holidays", click.STRING),
-            ("storage_type", click.Choice(countries)),
+            ("country_region_for_holidays", click.Choice(countries)),
+            ("storage_type", click.Choice(["File"])),
         )
         self.filepath = Path.home().joinpath(".leavemanager")
         self.conf = self.filepath.joinpath("config.json")

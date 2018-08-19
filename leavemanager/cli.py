@@ -57,7 +57,7 @@ def sim():
 @click.argument("date", type=DATE)
 @click.option("--until", "-t", type=DATE)
 @click.option("--approved", "-A", type=click.BOOL)
-def add(date, until):
+def add(date, until, approved):
     """
     Adds a new entry in dates of leave
     """

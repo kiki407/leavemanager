@@ -12,7 +12,6 @@ from workalendar.registry import registry
 
 
 class Leave(object):
-
     def __init__(self, date, approved=False):
         self.date = date
         self.approved = approved
@@ -58,16 +57,19 @@ class Leave(object):
         if not conf.get("work_on_public_holidays", False):
             if not conf.get("work_on_weekends", False):
                 if not self.is_working_day():
-                    return f"Looks like you are not working on that day ({self.rawdate})"
+                    return (
+                        f"Looks like you are not working on that day ({self.rawdate})"
+                    )
             else:
                 if self.is_holliday():
-                    return f"Looks like you are not working on that day ({self.rawdate})"
+                    return (
+                        f"Looks like you are not working on that day ({self.rawdate})"
+                    )
         if self.storage.put(self.rawdate, data):
             return f"{self.rawdate} added"
 
 
 class LeaveRange(object):
-
     def __init__(self, date, until, approved=False):
         self.date = date
         self.until = until
@@ -85,7 +87,6 @@ class LeaveRange(object):
 
 
 class AllLeave(object):
-
     def __init__(self):
         self.storage = FileStorage()
 
