@@ -50,6 +50,12 @@ class Leave(object):
         else:
             return f"No leave found for date {self.rawdate}"
 
+    def approve(self):
+        if self.storage.update(self.rawdate, {"approved":True}):
+            return f"{self.rawdate} marked approved"
+        else:
+            return f"nothing to approve for the date {self.rawdate}"
+
     def store(self):
         conf = getconf()
         approved = "Approved" if self.approved else "Pending"

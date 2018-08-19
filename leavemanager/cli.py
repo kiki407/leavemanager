@@ -3,6 +3,7 @@
 """Console script for leavemanager."""
 import sys
 import click
+import leavemanager
 from leavemanager.configuration import getconf, setconf, get_keys
 from leavemanager.utils import slightlybeautify
 from leavemanager.leavemanager import Leave, AllLeave
@@ -25,7 +26,7 @@ DATE = DateParamType()
 
 
 @click.group(chain=False)
-@click.version_option()
+@click.version_option(version=leavemanager.__version__)
 def main(args=None):
     """Console script for leavemanager."""
     return 0
@@ -79,28 +80,23 @@ def rem(date):
     click.echo(leave.remove())
 
 
-@main.group()
-@click.option("--old", "-o", type=click.BOOL, help="approve old")
-@click.option("--year", "-o", type=click.BOOL, help="approve old")
-
-def approve(old):
+@main.group(chain=False)
+def approve():
     """
     Approves leave 
     """
-    if old:
-        leave = AllLeave()
-        leave.approve_old()
-    else:
-        leave = Leave()
+    return 0
 
-    click.echo("remove leave")
-
+@approve.command()
+@click.argument("date", type=DATE)
+def one(date):
+    leave = Leave(date)
+    click.echo(leave.approve())
 
 @approve.command()
 def old():
     leave = AllLeave()
-    leave.approve_old()
-
+    click.echo(leave.approve_old())
 
 @main.command()
 @click.option("--year", "-y", default="current", help="year of leave")
