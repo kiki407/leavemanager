@@ -17,6 +17,7 @@ class Leave(object):
         self.approved = approved
         self.rawdate = date.strftime("%d/%m/%Y")
         self.year = date.year
+        self.business_year = self.business_year(date)
         self.storage = FileStorage()
 
     def __repr__(self):
@@ -51,7 +52,7 @@ class Leave(object):
             return f"No leave found for date {self.rawdate}"
 
     def approve(self):
-        if self.storage.update(self.rawdate, {"approved":True}):
+        if self.storage.update(self.rawdate, {"approved": True}):
             return f"{self.rawdate} marked approved"
         else:
             return f"nothing to approve for the date {self.rawdate}"
@@ -63,14 +64,10 @@ class Leave(object):
         if not conf.get("work_on_public_holidays", False):
             if not conf.get("work_on_weekends", False):
                 if not self.is_working_day():
-                    return (
-                        f"Looks like you are not working on that day ({self.rawdate})"
-                    )
+                    return f"({self.rawdate}) is on a weekend"
             else:
                 if self.is_holliday():
-                    return (
-                        f"Looks like you are not working on that day ({self.rawdate})"
-                    )
+                    return f"({self.rawdate}) seems to be on a public holiday"
         if self.storage.put(self.rawdate, data):
             return f"{self.rawdate} added"
 

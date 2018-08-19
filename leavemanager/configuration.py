@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import click
 import pycountry
+from leavemanager.utils import clickDate
 from workalendar.registry import registry
 
 
@@ -34,6 +35,7 @@ class ConfigurationFile(object):
             ("work_on_public_holidays", click.BOOL),
             ("country_region_for_holidays", click.Choice(countries)),
             ("storage_type", click.Choice(["File"])),
+            ("start_of_leave_year", clickDate.DATE),
         )
         self.filepath = Path.home().joinpath(".leavemanager")
         self.conf = self.filepath.joinpath("config.json")
@@ -73,3 +75,7 @@ def getconf():
 def get_country_code(country):
     countries = Countries()
     return countries.get_country_code(country)
+
+
+def get_business_year(year):
+    cfile = ConfigurationFile()

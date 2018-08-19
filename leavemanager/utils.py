@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import click
+
 
 def slightlybeautify(var):
     return " ".join(var.split("_"))
@@ -24,3 +26,18 @@ def formatreport(data, year, daysleft):
     resstr.append(daysleft)
     resstr.append("")
     return "\n".join(resstr)
+
+
+class DateParamType(click.ParamType):
+    name = "date"
+
+    def convert(self, value, param, ctx):
+        default = datetime.today()
+        try:
+            return parse(value, fuzzy=True, default=default, dayfirst=True).date()
+        except ValueError:
+            self.fail("%s is not a valid date" % value, param, ctx)
+
+
+class clickDate(object):
+    DATE = DateParamType()

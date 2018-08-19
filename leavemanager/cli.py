@@ -5,24 +5,10 @@ import sys
 import click
 import leavemanager
 from leavemanager.configuration import getconf, setconf, get_keys
-from leavemanager.utils import slightlybeautify
+from leavemanager.utils import slightlybeautify, clickDate
 from leavemanager.leavemanager import Leave, AllLeave
 from datetime import datetime
 from dateutil.parser import parse
-
-
-class DateParamType(click.ParamType):
-    name = "date"
-
-    def convert(self, value, param, ctx):
-        default = datetime.today()
-        try:
-            return parse(value, fuzzy=True, default=default, dayfirst=True).date()
-        except ValueError:
-            self.fail("%s is not a valid date" % value, param, ctx)
-
-
-DATE = DateParamType()
 
 
 @click.group(chain=False)
@@ -56,8 +42,8 @@ def sim():
 
 
 @main.command()
-@click.argument("date", type=DATE)
-@click.option("--until", "-t", type=DATE)
+@click.argument("date", type=clickDate.DATE)
+@click.option("--until", "-t", type=clickDate.DATE)
 @click.option("--approved", "-A", type=click.BOOL)
 def add(date, until, approved):
     """
@@ -71,7 +57,7 @@ def add(date, until, approved):
 
 
 @main.command()
-@click.argument("date", type=DATE)
+@click.argument("date", type=clickDate.DATE)
 def rem(date):
     """
     Removes an entry from leaves
@@ -87,16 +73,22 @@ def approve():
     """
     return 0
 
+
 @approve.command()
-@click.argument("date", type=DATE)
+@click.argument("date", type=clickDate.DATE)
 def one(date):
     leave = Leave(date)
     click.echo(leave.approve())
 
+
 @approve.command()
 def old():
+    """
+    Auto approves leaves previous to today 
+    """
     leave = AllLeave()
     click.echo(leave.approve_old())
+
 
 @main.command()
 @click.option("--year", "-y", default="current", help="year of leave")
