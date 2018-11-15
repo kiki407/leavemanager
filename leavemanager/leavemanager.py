@@ -17,7 +17,7 @@ class Leave(object):
         self.approved = approved
         self.rawdate = date.strftime("%d/%m/%Y")
         self.year = date.year
-        self.business_year = self.business_year(date)
+        # self.business_year = self.business_year(date)
         self.storage = FileStorage()
 
     def __repr__(self):
