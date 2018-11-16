@@ -6,6 +6,7 @@ import click
 import pycountry
 from leavemanager.utils import clickDate
 from workalendar.registry import registry
+from datetime import date, datetime
 
 
 class Countries(object):
@@ -26,6 +27,7 @@ class Countries(object):
 
 class ConfigurationFile(object):
     def __init__(self):
+        self.fmt = "#date#%Y%m%d"
         countries = Countries().get_countries()
         self.keys = (
             ("days_of_leave", click.INT),
@@ -45,13 +47,18 @@ class ConfigurationFile(object):
             return {}
         with open(str(self.conf), "r") as confighandler:
             configvalues = json.load(confighandler)
-
+            for k, v in configvalues.items():
+                if isinstance(v,str) and "#date#" in v:
+                    configvalues[k] = datetime.strptime(v, self.fmt).date()
         return configvalues
 
     def __set_configuration(self, config):
         if not self.filepath.exists():
             self.filepath.mkdir(parents=True, exist_ok=True)
         with open(str(self.conf), "w") as confighandler:
+            for k, v in config.items():
+                if isinstance(v, date):
+                    config[k] = v.strftime(self.fmt)
             json.dump(config, confighandler)
 
     configuration = property(__get_configuration, __set_configuration)
